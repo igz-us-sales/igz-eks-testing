@@ -25,6 +25,8 @@ kind: ConfigMap
 metadata:
   name: mlrun-override-env
   namespace: default-tenant
+  
+kubectl apply -f cleanup_override.yaml
 
 kubectl -n default-tenant delete pod <mlrun-api-pod>
 ```
