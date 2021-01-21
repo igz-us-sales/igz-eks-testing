@@ -35,15 +35,15 @@ kubectl -n default-tenant delete pod <mlrun-api-pod>
 
 Git clone updated demos repo.
 
-```
+```bash
 git clone https://github.com/mlrun/demos.git
 ```
 
 Update model to ResNet50. Replaces EffecientNetB7.
 
-```
-src-tfv1/horovod-training.py
-src-tfv2/horovod-training.py
+```python
+# src-tfv1/horovod-training.py
+# src-tfv2/horovod-training.py
 
 from tensorflow.keras.applications import ResNet50
 model = ResNet50(include_top=False, input_shape=IMAGE_SHAPE)
@@ -51,8 +51,8 @@ model = ResNet50(include_top=False, input_shape=IMAGE_SHAPE)
 
 Add limits/requests to job for best practices.
 
-```
-horovod-project.ipynb
+```python
+# horovod-project.ipynb
 
 # Assuming being run with p3.2xlarge
 if use_gpu:
@@ -66,8 +66,8 @@ else:
 
 Create image for training - TF v1 (only if running TF v1)
 
-```
-Any notebook
+```python
+# Any notebook
 
 image = f"docker-registry.{os.getenv('IGZ_NAMESPACE_DOMAIN')}:80/tf-v1-image"
 
@@ -81,8 +81,8 @@ build_image.build_config(
 build_image.deploy(with_mlrun=False)
 ```
 
-```
-horovod-project.ipynb
+```python
+# horovod-project.ipynb
 
 if tf_ver == 'v1':
     trainer.spec.image = f"docker-registry.{os.getenv('IGZ_NAMESPACE_DOMAIN')}:80/tf-v1-image"
@@ -92,8 +92,8 @@ else:
 
 Update image for serving - TF v1 (only if running TF v1)
 
-```
-horovod-project.ipynb
+```python
+# horovod-project.ipynb
 
 if tf_ver == 'v1':
     hvdproj.set_function('hub://tf1_serving', 'serving')
