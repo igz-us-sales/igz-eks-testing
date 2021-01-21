@@ -42,7 +42,6 @@ git clone https://github.com/mlrun/demos.git
 Update model to ResNet50. Replaces EffecientNetB7.
 
 ```python
-# src-tfv1/horovod-training.py
 # src-tfv2/horovod-training.py
 
 from tensorflow.keras.applications import ResNet50
