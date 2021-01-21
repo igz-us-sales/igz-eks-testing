@@ -51,10 +51,55 @@ model = ResNet50(include_top=False, input_shape=IMAGE_SHAPE)
 Add limits/requests to job for best practices.
 
 ```
+src-tfv1/horovod-project.ipynb
+src-tfv2/horovod-project.ipynb
+
+# Assuming being run with p3.2xlarge
+if use_gpu:
+    trainer.gpus(1)
+    trainer.with_requests(cpu=1, mem="3G")
+    trainer.with_limits(cpu=6, mem="15G")
+else:
+    trainer.with_requests(cpu=1, mem="3G")
+    trainer.with_limits(cpu=2, mem="5G")
+```
+
+Create image for training - TF v1 (only if running TF v1)
+
+```
+Any notebook
+
+image = f"docker-registry.{os.getenv('IGZ_NAMESPACE_DOMAIN')}:80/tf-v1-image"
+
+# Build Docker Image (only needs to be run once)
+build_image = new_function(name="build-image", kind="job")
+build_image.build_config(
+    image=image, base_image="mlrun/ml-models-gpu:0.5.4-py36", commands=["pip uninstall tensorflow horovod -y",
+                                                                        "conda install tensorflow-gpu==1.14.0 -y",
+                                                                        "pip install keras==2.3.1 horovod==0.16.4"]
+)
+build_image.deploy(with_mlrun=False)
+```
+
+```
 horovod-project.ipynb
 
-trainer.with_requests(cpu=1, mem="3G")
-trainer.with_limits(cpu=2, mem="5G")
+if tf_ver == 'v1':
+    trainer.spec.image = f"docker-registry.{os.getenv('IGZ_NAMESPACE_DOMAIN')}:80/tf-v1-image"
+else:
+    trainer.spec.image = image(use_gpu)
+```
+
+Update image for serving - TF v1 (only if running TF v1)
+
+```
+horovod-project.ipynb
+
+if tf_ver == 'v1':
+    hvdproj.set_function('hub://tf1_serving', 'serving')
+    hvdproj.func("serving").spec.base_spec['spec']['build']['commands'].append("pip install 'h5py<3.0.0'")
+else:
+    hvdproj.set_function('hub://tf2_serving', 'serving')
 ```
 
 ## Testing Results
