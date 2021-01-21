@@ -56,9 +56,9 @@ Add limits/requests to job for best practices.
 
 # Assuming being run with p3.2xlarge
 if use_gpu:
-    trainer.gpus(1)
     trainer.with_requests(cpu=1, mem="3G")
     trainer.with_limits(cpu=6, mem="15G")
+    trainer.gpus(1)
 else:
     trainer.with_requests(cpu=1, mem="3G")
     trainer.with_limits(cpu=2, mem="5G")
