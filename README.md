@@ -42,7 +42,8 @@ git clone https://github.com/mlrun/demos.git
 Update model to ResNet50. Replaces EffecientNetB7.
 
 ```
-horovod-training.py
+src-tfv1/horovod-training.py
+src-tfv2/horovod-training.py
 
 from tensorflow.keras.applications import ResNet50
 model = ResNet50(include_top=False, input_shape=IMAGE_SHAPE)
@@ -51,8 +52,7 @@ model = ResNet50(include_top=False, input_shape=IMAGE_SHAPE)
 Add limits/requests to job for best practices.
 
 ```
-src-tfv1/horovod-project.ipynb
-src-tfv2/horovod-project.ipynb
+horovod-project.ipynb
 
 # Assuming being run with p3.2xlarge
 if use_gpu:
